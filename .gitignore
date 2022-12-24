@@ -165,3 +165,6 @@ traceback.txt
 
 # Saves
 game/saves/*
+
+# Cached files
+game/cache/*
