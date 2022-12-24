@@ -165,3 +165,4 @@ traceback.txt
 
 # Saves
 *.save
+game/saves/persistent
