@@ -164,5 +164,4 @@ traceback.txt
 *.rpyb
 
 # Saves
-*.save
-game/saves/persistent
+game/saves/*
