@@ -162,6 +162,7 @@ traceback.txt
 # Compiled files
 *.rpyc
 *.rpyb
+*.rpymc
 
 # Saves
 game/saves/*
