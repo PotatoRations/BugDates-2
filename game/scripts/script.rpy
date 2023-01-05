@@ -10,7 +10,7 @@ label start:
     ac "hello ksjdfhkjsdfhjksdh"
 
 
-    nvl show
+    #nvl show
     pause
     nvl_narrator "Ace added you to the group"
     ac_nvl "It's ball snatching time"
