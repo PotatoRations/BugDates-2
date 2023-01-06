@@ -25,14 +25,14 @@ init -1 python:
     icon_width = 107  # The width of phone icons
 
     icon_dict = {
-                'Ace': "texting_ui/texting_icon_ace.png",
-                'Blair': "texting_ui/texting_icon_blair.png",
-                'Ant': "texting_ui/texting_icon_ant.png",
-                'Kale': "texting_ui/texting_icon_kale.png",
-                'Xaea': "texting_ui/texting_icon_xaea.png"
+                'Ace': "texting_ui/phone_received_icon_ace.png",
+                'Blair': "texting_ui/phone_received_icon_blair.png",
+                'Ant': "texting_ui/phone_received_icon_ant.png",
+                'Kale': "texting_ui/phone_received_icon_kale.png",
+                'Xaea': "texting_ui/phone_received_icon_xaea.png"
                 }
 
-    mc_icon = im.Scale("texting_ui/texting_icon_MC.png", icon_width, icon_width)
+    mc_icon = im.Scale("texting_ui/phone_send_icon.png", icon_width, icon_width)
 
     def Phone_ReceiveSound(event, interact=True, **kwargs):
         if event == "show_done":
@@ -99,7 +99,7 @@ screen PhoneDialogue(dialogue, items=None):
             # scrollbars "vertical"
             vbox:
                 xalign 0.5
-                null height 20
+                null height 40
                 use nvl_phonetext(dialogue)
                 null height 100
 
