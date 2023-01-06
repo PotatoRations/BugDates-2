@@ -22,20 +22,17 @@ init python:
         voice_mode = VoiceMode.NORM
         muted = False
 
-        # Renpy character object of this character;
-        character = None
-        affection = 0
-        
-        def change_affection(amount: int):
-            self.affection += amount
-            # run fancy screen animation here
-
         # Changes which beep this character's voice callback will use
         def change_voice_mode(mode: VoiceMode):
             self.voice_mode = mode
 
         def set_mute(mode: bool):
             self.muted = mode
+        
+        def set_voices(high: str, norm: str, low: str):
+            self.bleep_dict[VoiceMode.HIGH] = high
+            self.bleep_dict[VoiceMode.NORM] = norm
+            self.bleep_dict[VoiceMode.LOW] = low
 
     ## Callback function for beeps
     def beep(char: CustomCharacter, event, interact=True, **kwargs):
