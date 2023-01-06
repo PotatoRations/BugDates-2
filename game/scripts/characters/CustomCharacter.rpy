@@ -1,4 +1,4 @@
-init python:
+init -2 python:
     from enum import Enum
     from functools import partial #Used when implementing the beep stuff
 

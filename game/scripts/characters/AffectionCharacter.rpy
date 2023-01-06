@@ -1,4 +1,4 @@
-init 1 python: # Must be initialised after CustomCharacter
+init -1 python: # Must be initialised after CustomCharacter and before the rest of the scripts
     class AffectionCharacter(CustomCharacter):
         affection = 0
 
