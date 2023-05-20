@@ -358,28 +358,65 @@ screen main_menu():
     tag menu
 
     add gui.main_menu_background
-    add "gui/main_menu_logo.png"
+
+    # Used a fixed here since add does not support styles, definitely unecessary, but idk
+    fixed:
+        style "main_menu_border"
+        add "gui/main_menu/BD_Border.png"
+
+    # Fixed containing the logo and character sprites       
+    fixed:
+        style "main_menu_cluster"
+        add "gui/main_menu/BD_Logo.png":
+            xalign 0.5
+            yalign 0.19
+        add "gui/main_menu/BD_BugIcon_Spider.png":
+            xalign 0.1
+            yalign 0.06
+        add "gui/main_menu/BD_BugIcon_Scorpion.png":
+            xalign 0
+            yalign 0.61
+        add "gui/main_menu/BD_BugIcon_Flower.png":
+            xalign 0.21
+            yalign 0.95
+        add "gui/main_menu/BD_BugIcon_Fly.png":
+            xalign 0.85
+            yalign 0.02
+        add "gui/main_menu/BD_BugIcon_Roach.png":
+            xalign 0.99
+            yalign 0.47
+        add "gui/main_menu/BD_BugIcon_Ant.png":
+            xalign 0.86
+            yalign 0.91
 
     text "ver. [config.version]":
         style "main_menu_version"
 
-    hbox:
+    # Navigation menu (The bit that contains the buttons)
+    vbox:
         style "main_menu_nav"
 
-        imagebutton auto "gui/mm_start_%s.png":
+        imagebutton:
+            idle "gui/main_menu/BD_B_Start.png"
             focus_mask True
             action Start()
             # hovered [ Play("sound","audio/mouse_click.ogg") ]
 
-        imagebutton auto "gui/mm_load_%s.png":
+        imagebutton:
+            idle "gui/main_menu/BD_B_Load.png"
             focus_mask True
             action ShowMenu("load")
+        # imagebutton auto "gui/mm_load_%s.png":
+        #     focus_mask True
+        #     action ShowMenu("load")
         
-        imagebutton auto "gui/mm_gallery_%s.png":
+        imagebutton:
+            idle "gui/main_menu/BD_B_Gallery.png"
             focus_mask True
             # action ShowMenu("gallery") TODO: uncomment once gallery screen is done
 
-        imagebutton auto "gui/mm_options_%s.png":
+        imagebutton:
+            idle "gui/main_menu/BD_B_Options.png"
             focus_mask True
             action ShowMenu("preferences")
 
@@ -388,7 +425,9 @@ style main_menu_frame is empty
 style main_menu_text is gui_text
 style main_menu_title is main_menu_text
 style main_menu_version is main_menu_text
-style main_menu_nav is hbox
+style main_menu_nav is vbox
+style main_menu_border is empty
+style main_menu_cluster is empty
 
 style main_menu_text:
     properties gui.text_properties("main_menu", accent=True)
@@ -396,14 +435,24 @@ style main_menu_text:
 
 style main_menu_version:
     properties gui.text_properties("version")
-    xalign 0.99
-    yalign 0.98
+    xalign 0.94
+    yalign 0.96
 
 style main_menu_nav:
-    xalign 0.5
-    yalign 0.94
+    xalign 0.97
+    yalign 0.27
     spacing 80
+    
+style main_menu_border:
+    # For some reason the border is slightly off, this realigns it
+    xoffset 5
+    yoffset 5
 
+style main_menu_cluster:
+    xalign 0.1
+    yalign 0.3
+    xmaximum 1350
+    ymaximum 800
 
 ## Game Menu screen ############################################################
 ##
