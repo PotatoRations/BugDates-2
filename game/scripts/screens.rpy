@@ -358,28 +358,38 @@ screen main_menu():
     tag menu
 
     add gui.main_menu_background
-    add "gui/main_menu_logo.png"
+    add "gui/main_menu/BD_Border.png":
+        # For some reason the border is slightly off, this realigns it
+        xoffset 5
+        yoffset 5
 
     text "ver. [config.version]":
         style "main_menu_version"
 
-    hbox:
+    vbox:
         style "main_menu_nav"
 
-        imagebutton auto "gui/mm_start_%s.png":
+        imagebutton:
+            idle "gui/main_menu/BD_B_Start.png"
             focus_mask True
             action Start()
             # hovered [ Play("sound","audio/mouse_click.ogg") ]
 
-        imagebutton auto "gui/mm_load_%s.png":
+        imagebutton:
+            idle "gui/main_menu/BD_B_Load.png"
             focus_mask True
             action ShowMenu("load")
+        # imagebutton auto "gui/mm_load_%s.png":
+        #     focus_mask True
+        #     action ShowMenu("load")
         
-        imagebutton auto "gui/mm_gallery_%s.png":
+        imagebutton:
+            idle "gui/main_menu/BD_B_Gallery.png"
             focus_mask True
             # action ShowMenu("gallery") TODO: uncomment once gallery screen is done
 
-        imagebutton auto "gui/mm_options_%s.png":
+        imagebutton:
+            idle "gui/main_menu/BD_B_Options.png"
             focus_mask True
             action ShowMenu("preferences")
 
@@ -388,7 +398,7 @@ style main_menu_frame is empty
 style main_menu_text is gui_text
 style main_menu_title is main_menu_text
 style main_menu_version is main_menu_text
-style main_menu_nav is hbox
+style main_menu_nav is vbox
 
 style main_menu_text:
     properties gui.text_properties("main_menu", accent=True)
@@ -396,12 +406,12 @@ style main_menu_text:
 
 style main_menu_version:
     properties gui.text_properties("version")
-    xalign 0.99
-    yalign 0.98
+    xalign 0.94
+    yalign 0.96
 
 style main_menu_nav:
-    xalign 0.5
-    yalign 0.94
+    xalign 0.97
+    yalign 0.27
     spacing 80
 
 
