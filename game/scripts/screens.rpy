@@ -398,12 +398,14 @@ screen main_menu():
 
         imagebutton:
             idle "gui/main_menu/BD_B_Start.png"
+            hover "gui/main_menu/BD_B_StartHover.png"
             focus_mask True
             action Start()
             # hovered [ Play("sound","audio/mouse_click.ogg") ]
 
         imagebutton:
             idle "gui/main_menu/BD_B_Load.png"
+            hover "gui/main_menu/BD_B_LoadHover.png"
             focus_mask True
             action ShowMenu("load")
         # imagebutton auto "gui/mm_load_%s.png":
@@ -412,11 +414,13 @@ screen main_menu():
         
         imagebutton:
             idle "gui/main_menu/BD_B_Gallery.png"
+            hover "gui/main_menu/BD_B_GalleryHover.png"
             focus_mask True
             # action ShowMenu("gallery") TODO: uncomment once gallery screen is done
 
         imagebutton:
             idle "gui/main_menu/BD_B_Options.png"
+            hover "gui/main_menu/BD_B_OptionsHover.png"
             focus_mask True
             action ShowMenu("preferences")
 
