@@ -299,41 +299,37 @@ screen navigation():
 
         spacing gui.navigation_spacing
 
-        if main_menu:
+        imagebutton auto "gui/nav_sidebar/SideBar_Text_Options_%s.png":
+            action ShowMenu("preferences")
+            focus_mask True
 
-            textbutton _("Start") action Start()
+        imagebutton auto "gui/nav_sidebar/SideBar_Text_Gallery_%s.png":
+            action ShowMenu("gallery")
+            focus_mask True
 
-        else:
+        imagebutton auto "gui/nav_sidebar/SideBar_Text_Load_%s.png":
+            action ShowMenu("load")
+            focus_mask True
 
-            textbutton _("History") action ShowMenu("history")
+        imagebutton auto "gui/nav_sidebar/SideBar_Text_Save_%s.png":
+            action ShowMenu("save")
+            focus_mask True
+        if not main_menu:
+            imagebutton auto "gui/nav_sidebar/SideBar_Text_MainMenu_%s.png":
+                action MainMenu(confirm=True)
+                focus_mask True
 
-            textbutton _("Save") action ShowMenu("save")
-
-        textbutton _("Load") action ShowMenu("load")
-
-        textbutton _("Preferences") action ShowMenu("preferences")
-
-        if _in_replay:
-
-            textbutton _("End Replay") action EndReplay(confirm=True)
-
-        elif not main_menu:
-
-            textbutton _("Main Menu") action MainMenu()
-
-        textbutton _("About") action ShowMenu("about")
-
-        if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
-
-            ## Help isn't necessary or relevant to mobile devices.
-            textbutton _("Help") action ShowMenu("help")
+        imagebutton auto "gui/nav_sidebar/SideBar_Text_Return_%s.png":
+            action Return(None)
+            focus_mask True
 
         if renpy.variant("pc"):
 
             ## The quit button is banned on iOS and unnecessary on Android and
             ## Web.
-            textbutton _("Quit") action Quit(confirm=not main_menu)
-
+            imagebutton auto "gui/nav_sidebar/SideBar_Text_Quit_%s.png":
+                action Quit(confirm=True)
+                focus_mask True
 
 style navigation_button is gui_button
 style navigation_button_text is gui_button_text
@@ -467,59 +463,51 @@ style main_menu_cluster:
 ## this screen is intended to be used with one or more children, which are
 ## transcluded (placed) inside it.
 
-screen game_menu(title, scroll=None, yinitial=0.0):
+screen game_menu(scroll=None, yinitial=0.0):
 
     style_prefix "game_menu"
 
-    if main_menu:
-        add gui.main_menu_background
-    else:
-        add gui.game_menu_background
+    hbox:
 
-    frame:
-        style "game_menu_outer_frame"
+        ## Reserve space for the navigation section.
+        frame:
+            style "game_menu_navigation_frame"
 
-        hbox:
+        frame:
+            style "game_menu_content_frame"
 
-            ## Reserve space for the navigation section.
-            frame:
-                style "game_menu_navigation_frame"
+            if scroll == "viewport":
 
-            frame:
-                style "game_menu_content_frame"
+                viewport:
+                    yinitial yinitial
+                    scrollbars "vertical"
+                    mousewheel True
+                    draggable True
+                    pagekeys True
 
-                if scroll == "viewport":
+                    side_yfill True
 
-                    viewport:
-                        yinitial yinitial
-                        scrollbars "vertical"
-                        mousewheel True
-                        draggable True
-                        pagekeys True
-
-                        side_yfill True
-
-                        vbox:
-                            transclude
-
-                elif scroll == "vpgrid":
-
-                    vpgrid:
-                        cols 1
-                        yinitial yinitial
-
-                        scrollbars "vertical"
-                        mousewheel True
-                        draggable True
-                        pagekeys True
-
-                        side_yfill True
-
+                    vbox:
                         transclude
 
-                else:
+            elif scroll == "vpgrid":
+
+                vpgrid:
+                    cols 1
+                    yinitial yinitial
+
+                    scrollbars "vertical"
+                    mousewheel True
+                    draggable True
+                    pagekeys True
+
+                    side_yfill True
 
                     transclude
+
+            else:
+
+                transclude
 
     use navigation
 
@@ -527,8 +515,6 @@ screen game_menu(title, scroll=None, yinitial=0.0):
         style "return_button"
 
         action Return()
-
-    label title
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
@@ -600,7 +586,7 @@ screen about():
     ## This use statement includes the game_menu screen inside this one. The
     ## vbox child is then included inside the viewport inside the game_menu
     ## screen.
-    use game_menu(_("About"), scroll="viewport"):
+    use game_menu(scroll="viewport"):
 
         style_prefix "about"
 
@@ -651,7 +637,7 @@ screen file_slots(title):
 
     default page_name_value = FilePageNameInputValue(pattern=_("Page {}"), auto=_("Automatic saves"), quick=_("Quick saves"))
 
-    use game_menu(title):
+    use game_menu():
 
         fixed:
 
@@ -766,7 +752,9 @@ screen preferences():
 
     tag menu
 
-    use game_menu(_("Preferences"), scroll="viewport"):
+    add "gui/options_menu/options_background.png"
+
+    use game_menu(scroll="viewport"):
 
         vbox:
 
