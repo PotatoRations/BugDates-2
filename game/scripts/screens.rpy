@@ -319,10 +319,6 @@ screen navigation():
                 action MainMenu(confirm=True)
                 focus_mask True
 
-        imagebutton auto "gui/nav_sidebar/SideBar_Text_Return_%s.png":
-            action Return(None)
-            focus_mask True
-
         if renpy.variant("pc"):
 
             ## The quit button is banned on iOS and unnecessary on Android and
@@ -330,6 +326,10 @@ screen navigation():
             imagebutton auto "gui/nav_sidebar/SideBar_Text_Quit_%s.png":
                 action Quit(confirm=True)
                 focus_mask True
+
+        imagebutton auto "gui/nav_sidebar/SideBar_Text_Return_%s.png":
+            action Return(None)
+            focus_mask True
 
 style navigation_button is gui_button
 style navigation_button_text is gui_button_text
@@ -511,11 +511,6 @@ screen game_menu(scroll=None, yinitial=0.0):
 
     use navigation
 
-    textbutton _("Return"):
-        style "return_button"
-
-        action Return()
-
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
 
@@ -529,9 +524,6 @@ style game_menu_scrollbar is gui_vscrollbar
 
 style game_menu_label is gui_label
 style game_menu_label_text is gui_label_text
-
-style return_button is navigation_button
-style return_button_text is navigation_button_text
 
 style game_menu_outer_frame:
     bottom_padding 45
@@ -566,10 +558,6 @@ style game_menu_label_text:
     color gui.accent_color
     yalign 0.5
 
-style return_button:
-    xpos gui.navigation_xpos
-    yalign 1.0
-    yoffset -45
 
 
 ## About screen ################################################################
@@ -622,14 +610,14 @@ style about_label_text:
 screen save():
 
     tag menu
-
+    add "gui/save_load_menu/BD_Save_Base.png"
     use file_slots(_("Save"))
 
 
 screen load():
 
     tag menu
-
+    add "gui/save_load_menu/BD_Load_Base.png"
     use file_slots(_("Load"))
 
 
@@ -662,7 +650,9 @@ screen file_slots(title):
                 style_prefix "slot"
 
                 xalign 0.5
+                xoffset -15
                 yalign 0.5
+                yoffset 50
 
                 spacing gui.slot_spacing
 
@@ -675,7 +665,9 @@ screen file_slots(title):
 
                         has vbox
 
-                        add FileScreenshot(slot) xalign 0.5
+                        add FileScreenshot(slot):
+                            xalign 0.5
+                            xsize 100
 
                         text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
                             style "slot_time_text"
@@ -735,7 +727,11 @@ style page_button_text:
     properties gui.button_text_properties("page_button")
 
 style slot_button:
-    properties gui.button_properties("slot_button")
+    xsize gui.slot_button_width
+    ysize gui.slot_button_height
+    idle_background "gui/save_load_menu/BD_SaveLoad_Slot_Small.png"
+    insensitive_background "gui/save_load_menu/BD_SaveLoad_Slot_Small.png"
+    hover_background "gui/save_load_menu/BD_SaveLoad_Slot_Hover_Small.png"
 
 style slot_button_text:
     properties gui.button_text_properties("slot_button")
@@ -756,158 +752,272 @@ screen preferences():
 
     use game_menu(scroll="viewport"):
 
-        vbox:
-
-            hbox:
-                box_wrap True
-
-                if renpy.variant("pc") or renpy.variant("web"):
-
-                    vbox:
-                        style_prefix "radio"
-                        label _("Display")
-                        textbutton _("Window") action Preference("display", "window")
-                        textbutton _("Fullscreen") action Preference("display", "fullscreen")
-
+        hbox:
+            spacing 56
+            # Left box
+            vbox:
+                spacing 105
+                # Offset
+                fixed:
+                    ysize 85
+                    xsize 1
+                # Display bar and buttons
+                hbox:
+                    ysize 80
+                    spacing 15
+                    imagebutton auto "gui/options_menu/button_left_%s.png":
+                            action Preference("display", "toggle")
+                            yalign 0.5
+                    if (preferences.fullscreen):
+                        add "gui/options_menu/screen_full.png"
+                    else:
+                        add "gui/options_menu/screen_window.png"
+                    imagebutton auto "gui/options_menu/button_right_%s.png":
+                            action Preference("display", "toggle")
+                            yalign 0.5
+                # Show transitions
+                hbox:
+                    ysize 80
+                    spacing 15
+                    imagebutton auto "gui/options_menu/button_left_%s.png":
+                            action Preference("transitions", "toggle")
+                            yalign 0.5
+                    if (preferences.transitions == 2):      # transitions on
+                        add "gui/options_menu/transitions_all.png"
+                    else:
+                        add "gui/options_menu/transitions_none.png"
+                    imagebutton auto "gui/options_menu/button_right_%s.png":
+                            action Preference("transitions", "toggle")
+                            yalign 0.5
+                # Skip unseen content
+                hbox:
+                    ysize 80
+                    spacing 15
+                    imagebutton auto "gui/options_menu/button_left_%s.png":
+                            action Preference("skip", "toggle")
+                            yalign 0.5
+                    if (preferences.skip_unseen == False):      # skip only seen
+                        add "gui/options_menu/skip_seen.png"
+                    else:
+                        add "gui/options_menu/transitions_all.png"
+                    imagebutton auto "gui/options_menu/button_right_%s.png":
+                            action Preference("skip", "toggle")
+                            yalign 0.5
+                # Keep skipping after choices
+                hbox:
+                    ysize 80
+                    spacing 15
+                    imagebutton auto "gui/options_menu/button_left_%s.png":
+                            action Preference("after choices", "toggle")
+                            yalign 0.5
+                    if (preferences.skip_after_choices == False):      # skip only seen
+                        add "gui/options_menu/after_choices_stop.png"
+                    else:
+                        add "gui/options_menu/after_choices_keep.png"
+                    imagebutton auto "gui/options_menu/button_right_%s.png":
+                            action Preference("after choices", "toggle")
+                            yalign 0.5
+            # Right box
+            vbox:
+                spacing 67
+                fixed:
+                    ysize 30
+                    xsize 1
+                bar:
+                    style "option_slider"
+                    value Preference("music volume")
+                bar:
+                    style "option_slider"
+                    value Preference("sound volume")
+                bar:
+                    style "option_slider"
+                    value Preference("voice volume")
+                bar:
+                    style "option_slider"
+                    value Preference("bleeps volume")
                 vbox:
-                    style_prefix "radio"
-                    label _("Rollback Side")
-                    textbutton _("Disable") action Preference("rollback side", "disable")
-                    textbutton _("Left") action Preference("rollback side", "left")
-                    textbutton _("Right") action Preference("rollback side", "right")
+                    first_spacing 0
+                    spacing 35
 
-                vbox:
-                    style_prefix "check"
-                    label _("Skip")
-                    textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choices") action Preference("after choices", "toggle")
-                    textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
-
-                ## Additional vboxes of type "radio_pref" or "check_pref" can be
-                ## added here, to add additional creator-defined preferences.
-
-            null height (4 * gui.pref_spacing)
-
-            hbox:
-                style_prefix "slider"
-                box_wrap True
-
-                vbox:
-
-                    label _("Text Speed")
-
-                    bar value Preference("text speed")
-
-                    label _("Auto-Forward Time")
-
-                    bar value Preference("auto-forward time")
-
-                vbox:
-
-                    if config.has_music:
-                        label _("Music Volume")
-
-                        hbox:
-                            bar value Preference("music volume")
-
-                    if config.has_sound:
-
-                        label _("Sound Volume")
-
-                        hbox:
-                            bar value Preference("sound volume")
-
-                            if config.sample_sound:
-                                textbutton _("Test") action Play("sound", config.sample_sound)
+                    fixed:
+                        xsize 1
+                        ysize 40
+                    imagebutton:
+                        idle "gui/options_menu/BD_TOGGLE_OFF.png"
+                        selected_idle "gui/options_menu/BD_TOGGLE_ON.png"
+                        selected_hover "gui/options_menu/BD_TOGGLE_ON.png"
+                        action Preference("bleeps mute", "toggle")
+                    imagebutton:
+                        idle "gui/options_menu/BD_TOGGLE_OFF.png"
+                        selected_idle "gui/options_menu/BD_TOGGLE_ON.png"
+                        selected_hover "gui/options_menu/BD_TOGGLE_ON.png"
+                        #action Preference("bleeps mute", "toggle")
 
 
-                    if config.has_voice:
-                        label _("Voice Volume")
+        # vbox:
 
-                        hbox:
-                            bar value Preference("voice volume")
+        #     hbox:
+        #         box_wrap True
 
-                            if config.sample_voice:
-                                textbutton _("Test") action Play("voice", config.sample_voice)
+        #         if renpy.variant("pc") or renpy.variant("web"):
 
-                    if config.has_music or config.has_sound or config.has_voice:
-                        null height gui.pref_spacing
+        #             vbox:
+        #                 style_prefix "radio"
+        #                 label _("Display")
+        #                 textbutton _("Window") action Preference("display", "window")
+        #                 textbutton _("Fullscreen") action Preference("display", "fullscreen")
 
-                        textbutton _("Mute All"):
-                            action Preference("all mute", "toggle")
-                            style "mute_all_button"
+        #         vbox:
+        #             style_prefix "radio"
+        #             label _("Rollback Side")
+        #             textbutton _("Disable") action Preference("rollback side", "disable")
+        #             textbutton _("Left") action Preference("rollback side", "left")
+        #             textbutton _("Right") action Preference("rollback side", "right")
+
+        #         vbox:
+        #             style_prefix "check"
+        #             label _("Skip")
+        #             textbutton _("Unseen Text") action Preference("skip", "toggle")
+        #             textbutton _("After Choices") action Preference("after choices", "toggle")
+        #             textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
+
+        #         ## Additional vboxes of type "radio_pref" or "check_pref" can be
+        #         ## added here, to add additional creator-defined preferences.
+
+        #     null height (4 * gui.pref_spacing)
+
+        #     hbox:
+        #         style_prefix "slider"
+        #         box_wrap True
+
+        #         vbox:
+
+        #             label _("Text Speed")
+
+        #             bar value Preference("text speed")
+
+        #             label _("Auto-Forward Time")
+
+        #             bar value Preference("auto-forward time")
+
+        #         vbox:
+
+        #             if config.has_music:
+        #                 label _("Music Volume")
+
+        #                 hbox:
+        #                     bar value Preference("music volume")
+
+        #             if config.has_sound:
+
+        #                 label _("Sound Volume")
+
+        #                 hbox:
+        #                     bar value Preference("sound volume")
+
+        #                     if config.sample_sound:
+        #                         textbutton _("Test") action Play("sound", config.sample_sound)
 
 
-style pref_label is gui_label
-style pref_label_text is gui_label_text
-style pref_vbox is vbox
+        #             if config.has_voice:
+        #                 label _("Voice Volume")
 
-style radio_label is pref_label
-style radio_label_text is pref_label_text
-style radio_button is gui_button
-style radio_button_text is gui_button_text
-style radio_vbox is pref_vbox
+        #                 hbox:
+        #                     bar value Preference("voice volume")
 
-style check_label is pref_label
-style check_label_text is pref_label_text
-style check_button is gui_button
-style check_button_text is gui_button_text
-style check_vbox is pref_vbox
+        #                     if config.sample_voice:
+        #                         textbutton _("Test") action Play("voice", config.sample_voice)
 
-style slider_label is pref_label
-style slider_label_text is pref_label_text
-style slider_slider is gui_slider
-style slider_button is gui_button
-style slider_button_text is gui_button_text
-style slider_pref_vbox is pref_vbox
+        #             if config.has_music or config.has_sound or config.has_voice:
+        #                 null height gui.pref_spacing
 
-style mute_all_button is check_button
-style mute_all_button_text is check_button_text
+        #                 textbutton _("Mute All"):
+        #                     action Preference("all mute", "toggle")
+        #                     style "mute_all_button"
 
-style pref_label:
-    top_margin gui.pref_spacing
-    bottom_margin 3
 
-style pref_label_text:
-    yalign 1.0
+# style pref_label is gui_label
+# style pref_label_text is gui_label_text
+# style pref_vbox is vbox
 
-style pref_vbox:
-    xsize 338
+# style radio_label is pref_label
+# style radio_label_text is pref_label_text
+# style radio_button is gui_button
+# style radio_button_text is gui_button_text
+# style radio_vbox is pref_vbox
 
-style radio_vbox:
-    spacing gui.pref_button_spacing
+# style check_label is pref_label
+# style check_label_text is pref_label_text
+# style check_button is gui_button
+# style check_button_text is gui_button_text
+# style check_vbox is pref_vbox
 
-style radio_button:
-    properties gui.button_properties("radio_button")
-    foreground "gui/button/radio_[prefix_]foreground.png"
+# style slider_label is pref_label
+# style slider_label_text is pref_label_text
+# style slider_slider is gui_slider
+# style slider_button is gui_button
+# style slider_button_text is gui_button_text
+# style slider_pref_vbox is pref_vbox
 
-style radio_button_text:
-    properties gui.button_text_properties("radio_button")
+# style mute_all_button is check_button
+# style mute_all_button_text is check_button_text
 
-style check_vbox:
-    spacing gui.pref_button_spacing
+# style pref_label:
+#     top_margin gui.pref_spacing
+#     bottom_margin 3
 
-style check_button:
-    properties gui.button_properties("check_button")
-    foreground "gui/button/check_[prefix_]foreground.png"
+# style pref_label_text:
+#     yalign 1.0
 
-style check_button_text:
-    properties gui.button_text_properties("check_button")
+# style pref_vbox:
+#     xsize 338
 
-style slider_slider:
-    xsize 525
+# style radio_vbox:
+#     spacing gui.pref_button_spacing
 
-style slider_button:
-    properties gui.button_properties("slider_button")
-    yalign 0.5
-    left_margin 15
+# style radio_button:
+#     properties gui.button_properties("radio_button")
+#     foreground "gui/button/radio_[prefix_]foreground.png"
 
-style slider_button_text:
-    properties gui.button_text_properties("slider_button")
+# style radio_button_text:
+#     properties gui.button_text_properties("radio_button")
 
-style slider_vbox:
-    xsize 675
+# style check_vbox:
+#     spacing gui.pref_button_spacing
 
+# style check_button:
+#     properties gui.button_properties("check_button")
+#     foreground "gui/button/check_[prefix_]foreground.png"
+
+# style check_button_text:
+#     properties gui.button_text_properties("check_button")
+
+# style slider_slider:
+#     xsize 525
+
+# style slider_button:
+#     properties gui.button_properties("slider_button")
+#     yalign 0.5
+#     left_margin 15
+
+# style slider_button_text:
+#     properties gui.button_text_properties("slider_button")
+
+# style slider_vbox:
+#     xsize 675
+
+style option_slider is slider
+
+style option_slider:
+    hover_base_bar "gui/bar/BD_SliderBase_Hover.png"
+    idle_base_bar "gui/bar/BD_SliderBase.png"
+    hover_thumb "gui/bar/BD_SliderHeart_Hover.png"
+    idle_thumb "gui/bar/BD_SliderHeart.png"
+    thumb_offset 47
+    left_gutter 47
+    right_gutter 47
+    ysize 83 # size of bar image (which is also the height of the thumb)
+    xsize 637
 
 ## History screen ##############################################################
 ##
