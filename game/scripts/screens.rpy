@@ -611,17 +611,27 @@ screen save():
 
     tag menu
     add "gui/save_load_menu/BD_Save_Base.png"
-    use file_slots(_("Save"))
+    use file_slots(_("Save"), True)
 
 
 screen load():
 
     tag menu
     add "gui/save_load_menu/BD_Load_Base.png"
-    use file_slots(_("Load"))
+    use file_slots(_("Load"), False)
 
+# Array to keep track of save button hover
+init python:
+    saveslot_hover = [False for i in range(gui.file_slot_cols * gui.file_slot_rows)]
 
-screen file_slots(title):
+screen file_slots(title, save):
+
+    # If we are on the save screen, automatically moves player to quick slots page if last page was auto slots
+    # this is since autosaves aren't accessible on the save page
+    python:
+        if FilePageName() == 'a' and renpy.get_screen("save"):
+            renpy.run(FilePage("quick"))
+
 
     default page_name_value = FilePageNameInputValue(pattern=_("Page {}"), auto=_("Automatic saves"), quick=_("Quick saves"))
 
@@ -634,16 +644,16 @@ screen file_slots(title):
             order_reverse True
 
             ## The page name, which can be edited by clicking on a button.
-            button:
-                style "page_label"
+            # button:
+            #     style "page_label"
 
-                key_events True
-                xalign 0.5
-                action page_name_value.Toggle()
+            #     key_events True
+            #     xalign 0.5
+            #     action page_name_value.Toggle()
 
-                input:
-                    style "page_label_text"
-                    value page_name_value
+            #     input:
+            #         style "page_label_text"
+            #         value page_name_value
 
             ## The grid of file slots.
             grid gui.file_slot_cols gui.file_slot_rows:
@@ -656,6 +666,8 @@ screen file_slots(title):
 
                 spacing gui.slot_spacing
 
+                
+
                 for i in range(gui.file_slot_cols * gui.file_slot_rows):
 
                     $ slot = i + 1
@@ -663,42 +675,76 @@ screen file_slots(title):
                     button:
                         action FileAction(slot)
 
-                        has vbox
-
-                        add FileScreenshot(slot):
-                            xalign 0.5
-                            xsize 100
-
-                        text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
-                            style "slot_time_text"
-
-                        text FileSaveName(slot):
-                            style "slot_name_text"
+                        hovered SetDict(saveslot_hover, i, True)
+                        unhovered SetDict(saveslot_hover, i, False)
 
                         key "save_delete" action FileDelete(slot)
+
+                        vbox:
+                            first_spacing 11
+                            fixed:  # Fixed used to overlay slot frame over screenshot
+                                style "slot_fixed"
+
+                                if (saveslot_hover[i] == True):
+                                    add "gui/save_load_menu/BD_SaveLoad_Slot_Hover_Small.png"
+                                else:
+                                    add "gui/save_load_menu/BD_SaveLoad_Slot_Small.png"
+
+                                add FileScreenshot(slot):
+                                    xsize config.thumbnail_width
+                                    ysize config.thumbnail_height
+                                    xalign 0.5
+                                    yoffset 35
+                                    xoffset 6
+                                
+                                if (saveslot_hover[i] == True):
+                                    add "gui/save_load_menu/BD_SaveLoad_Slot_Hover_Small_Frame.png"
+                                else:
+                                    add "gui/save_load_menu/BD_SaveLoad_Slot_Small_Frame.png"
+
+
+
+                            text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
+                                style "slot_time_text"
+
+                            text FileSaveName(slot):
+                                style "slot_name_text"
 
             ## Buttons to access other pages.
             hbox:
                 style_prefix "page"
 
-                xalign 0.5
+                xalign 0.49
                 yalign 1.0
+                yoffset -35
 
                 spacing gui.page_spacing
 
-                textbutton _("<") action FilePagePrevious()
+                if (title == "Load"):
+                    textbutton _("<") action FilePagePrevious()
 
-                if config.has_autosave:
-                    textbutton _("{#auto_page}A") action FilePage("auto")
+                    if config.has_autosave:
+                        textbutton _("{#auto_page}A") action FilePage("auto")
 
-                if config.has_quicksave:
-                    textbutton _("{#quick_page}Q") action FilePage("quick")
+                    if config.has_quicksave:
+                        textbutton _("{#quick_page}Q") action FilePage("quick")
 
-                ## range(1, 10) gives the numbers from 1 to 9.
-                for page in range(1, 10):
-                    textbutton "[page]" action FilePage(page)
+                    ## range(1, 10) gives the numbers from 1 to 9.
+                    for page in range(1, 10):
+                        textbutton "[page]" action FilePage(page)
 
-                textbutton _(">") action FilePageNext()
+                    textbutton _(">") action FilePageNext()
+                else:
+                    textbutton _("<") action FilePagePrevious(auto=False)
+
+                    if config.has_quicksave:
+                        textbutton _("{#quick_page}Q") action FilePage("quick")
+
+                    ## range(1, 10) gives the numbers from 1 to 9.
+                    for page in range(1, 10):
+                        textbutton "[page]" action FilePage(page)
+
+                    textbutton _(">") action FilePageNext(auto=False)
 
 
 style page_label is gui_label
@@ -729,12 +775,16 @@ style page_button_text:
 style slot_button:
     xsize gui.slot_button_width
     ysize gui.slot_button_height
-    idle_background "gui/save_load_menu/BD_SaveLoad_Slot_Small.png"
-    insensitive_background "gui/save_load_menu/BD_SaveLoad_Slot_Small.png"
-    hover_background "gui/save_load_menu/BD_SaveLoad_Slot_Hover_Small.png"
 
 style slot_button_text:
     properties gui.button_text_properties("slot_button")
+    #idle_color gui.accent_color
+    selected_color gui.accent_color
+
+style slot_fixed:
+    xmaximum gui.slot_button_width
+    ymaximum gui.slot_button_height
+    
 
 
 ## Preferences screen ##########################################################

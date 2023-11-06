@@ -23,29 +23,29 @@ init python:
 ## The colors of text in the interface.
 
 ## An accent color used throughout the interface to label and highlight text.
-define gui.accent_color = u'#ffa7c1'
+define gui.accent_color = u'#4694e9'
 
 ## The color used for a text button when it is neither selected nor hovered.
-define gui.idle_color = u'#aaaaaa'
+define gui.idle_color = u'#e066a3'
 
 ## The small color is used for small text, which needs to be brighter/darker to
 ## achieve the same effect.
-define gui.idle_small_color = u'#888888'
+define gui.idle_small_color = u'#e46ea9'
 
 ## The color that is used for buttons and bars that are hovered.
-define gui.hover_color = u'#ffa7c1'
+define gui.hover_color = u'#4694e9'
 
 ## The color used for a text button when it is selected but not focused. A
 ## button is selected if it is the current screen or preference value.
-define gui.selected_color = u'#555555'
+define gui.selected_color = u'#f7b5c9'
 
 ## The color used for a text button when it cannot be selected.
 define gui.insensitive_color = u'#aaaaaa7f'
 
 ## Colors used for the portions of bars that are not filled in. These are not
 ## used directly, but are used when re-generating bar image files.
-define gui.muted_color = u'#e066a3'
-define gui.hover_muted_color = u'#ea99c1'
+define gui.muted_color = u'#ffa7c1'
+define gui.hover_muted_color = u'#4694e9'
 
 ## The colors used for dialogue and menu choice text.
 define gui.text_color = u'#404040'
@@ -221,7 +221,7 @@ define gui.choice_button_text_insensitive_color = "#444444"
 ## image files in gui/button, like the other kinds of buttons.
 
 ## The save slot button.
-define gui.slot_button_width = 471 # 451 + 20 #475
+define gui.slot_button_width = 451 # 451 + 20 #475
 define gui.slot_button_height = 334 #352
 define gui.slot_button_borders = Borders(15, 15, 15, 15)
 define gui.slot_button_text_size = 21
@@ -231,8 +231,8 @@ define gui.slot_button_text_selected_idle_color = gui.selected_color
 define gui.slot_button_text_selected_hover_color = gui.hover_color
 
 ## The width and height of thumbnails used by the save slots.
-define config.thumbnail_width = 384
-define config.thumbnail_height = 216
+define config.thumbnail_width = 432
+define config.thumbnail_height = 291
 
 ## The number of columns and rows in the grid of save slots.
 define gui.file_slot_cols = 3
