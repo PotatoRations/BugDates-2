@@ -643,18 +643,6 @@ screen file_slots(title, save):
             ## buttons do.
             order_reverse True
 
-            ## The page name, which can be edited by clicking on a button.
-            # button:
-            #     style "page_label"
-
-            #     key_events True
-            #     xalign 0.5
-            #     action page_name_value.Toggle()
-
-            #     input:
-            #         style "page_label_text"
-            #         value page_name_value
-
             ## The grid of file slots.
             grid gui.file_slot_cols gui.file_slot_rows:
                 style_prefix "slot"
@@ -778,7 +766,7 @@ style slot_button:
 
 style slot_button_text:
     properties gui.button_text_properties("slot_button")
-    #idle_color gui.accent_color
+    # selected colour looks out of place otherwise
     selected_color gui.accent_color
 
 style slot_fixed:
