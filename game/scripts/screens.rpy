@@ -311,10 +311,11 @@ screen navigation():
             action ShowMenu("load")
             focus_mask True
 
-        imagebutton auto "gui/nav_sidebar/SideBar_Text_Save_%s.png":
-            action ShowMenu("save")
-            focus_mask True
         if not main_menu:
+            imagebutton auto "gui/nav_sidebar/SideBar_Text_Save_%s.png":
+                action ShowMenu("save")
+                focus_mask True
+
             imagebutton auto "gui/nav_sidebar/SideBar_Text_MainMenu_%s.png":
                 action MainMenu(confirm=True)
                 focus_mask True
