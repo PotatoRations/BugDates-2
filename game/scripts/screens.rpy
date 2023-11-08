@@ -413,7 +413,7 @@ screen main_menu():
             idle "gui/main_menu/BD_B_Gallery.png"
             hover "gui/main_menu/BD_B_GalleryHover.png"
             focus_mask True
-            # action ShowMenu("gallery") TODO: uncomment once gallery screen is done
+            action ShowMenu("gallery")
 
         imagebutton:
             idle "gui/main_menu/BD_B_Options.png"
@@ -663,6 +663,7 @@ screen file_slots(title, save):
 
                     button:
                         action FileAction(slot)
+                        focus_mask True
 
                         hovered SetDict(saveslot_hover, i, True)
                         unhovered SetDict(saveslot_hover, i, False)
