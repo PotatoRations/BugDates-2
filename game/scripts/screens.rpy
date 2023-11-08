@@ -436,6 +436,7 @@ style main_menu_text:
 
 style main_menu_version:
     properties gui.text_properties("version")
+    color gui.idle_color
     xalign 0.94
     yalign 0.96
 
